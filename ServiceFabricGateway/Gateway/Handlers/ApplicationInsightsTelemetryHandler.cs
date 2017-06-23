@@ -31,7 +31,8 @@ namespace Gateway.Handlers
             var requestTelemetry = new RequestTelemetry
             {
                 Name = name,
-                Timestamp = startDate
+                Timestamp = startDate,
+                Url = request.RequestUri
             };
 
             stopWatch.Start();
