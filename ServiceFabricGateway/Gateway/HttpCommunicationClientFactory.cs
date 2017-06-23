@@ -10,7 +10,7 @@ namespace Gateway
     {
         private readonly HttpClient httpClient;
 
-        public HttpCommunicationClientFactory(HttpClient httpClient)
+        public HttpCommunicationClientFactory(HttpClient httpClient, IExceptionHandler exceptionHandler) : base(exceptionHandlers: new[] { exceptionHandler })
         {
             this.httpClient = httpClient;
         }

@@ -8,16 +8,18 @@ namespace Gateway
 {
     public class ServiceDiscoveryClientProxy : IClientProxy
     {
+        private readonly OperationRetrySettings operationRetrySettings;
         private readonly HttpCommunicationClientFactory communicationClientFactory;
 
-        public ServiceDiscoveryClientProxy(HttpClient httpClient)
+        public ServiceDiscoveryClientProxy(HttpClient httpClient, IExceptionHandler exceptionHandler, OperationRetrySettings operationRetrySettings)
         {
-            this.communicationClientFactory = new HttpCommunicationClientFactory(httpClient);
+            this.operationRetrySettings = operationRetrySettings;
+            this.communicationClientFactory = new HttpCommunicationClientFactory(httpClient, exceptionHandler);
         }
 
         public async Task<HttpResponseMessage> ProxyToService(FabricAddress fabricAddress, HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var client = new ServicePartitionClient<HttpCommunicationClient>(this.communicationClientFactory, fabricAddress.Uri);
+            var client = new ServicePartitionClient<HttpCommunicationClient>(this.communicationClientFactory, fabricAddress.Uri, retrySettings: this.operationRetrySettings);
 
             return await client.InvokeWithRetryAsync(c =>
                 {

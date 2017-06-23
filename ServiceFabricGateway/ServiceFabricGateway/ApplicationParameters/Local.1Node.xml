@@ -5,6 +5,6 @@
     <Parameter Name="Gateway_InstrumentationKey" Value="REPLACE_THIS" />
     <Parameter Name="Gateway_DisableTelemetry" Value="True" />
     <Parameter Name="Gateway_Attempts" Value="3" />
-    <Parameter Name="Gateway_SSLCertThumbprint" Value="73 64 87 54 5a 5e c8 09 63 84 f0 a7 1b 68 70 d4 ae 6e 6b 62" />
+    <Parameter Name="Gateway_SSLCertThumbprint" Value="C82EEA88D437C0995E0028CE48E0DC1C012A9E1D" />
   </Parameters>
 </Application>

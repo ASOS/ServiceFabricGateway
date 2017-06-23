@@ -1,4 +1,5 @@
-﻿using System.Fabric;
+﻿using System;
+using System.Fabric;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
@@ -7,6 +8,7 @@ using System.Web.Http;
 using Gateway.Handlers;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ServiceFabric.Services.Communication.Client;
 using Owin;
 
 namespace Gateway
@@ -43,21 +45,27 @@ namespace Gateway
             };
 
             var client = CreateHttpClient();
+            var maxRetryCount = GetMaxRetriesFromConfiguration();
+            var defaultBackoffInterval = TimeSpan.FromSeconds(0);
+            var operationRetrySettings = new OperationRetrySettings(
+                maxRetryBackoffIntervalOnTransientErrors: defaultBackoffInterval,
+                maxRetryBackoffIntervalOnNonTransientErrors: defaultBackoffInterval,
+                defaultMaxRetryCount: maxRetryCount);
 
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
             config.MessageHandlers.Add(new ApplicationInsightsTelemetryHandler(CreateTelemetryClient()));
             config.MessageHandlers.Add(new ProbeHandler());
-            config.MessageHandlers.Add(new GatewayHandler(new ServiceDiscoveryClientProxy(client), GetRetries()));
+            config.MessageHandlers.Add(new GatewayHandler(new ServiceDiscoveryClientProxy(client, new HttpExceptionHandler(), operationRetrySettings)));
             appBuilder.UseWebApi(config);
         }
 
-        private static int GetRetries()
+        private static int GetMaxRetriesFromConfiguration()
         {
             var config = FabricRuntime.GetActivationContext().GetConfigurationPackageObject("Config");
             int retries;
-                
-            if(!int.TryParse(config.Settings.Sections["Retries"].Parameters["Attempts"].Value, out retries))
+
+            if (!int.TryParse(config.Settings.Sections["Retries"].Parameters["Attempts"].Value, out retries))
             {
                 // Assume a default policy
                 retries = DefaultRetries;
