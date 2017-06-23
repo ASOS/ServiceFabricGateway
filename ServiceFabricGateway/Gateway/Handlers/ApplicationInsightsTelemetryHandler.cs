@@ -63,13 +63,11 @@ namespace Gateway.Handlers
         {
             var exceptionTelemtry = new ExceptionTelemetry(ex);
 
-            exceptionTelemtry.Context.Operation.ParentId = requestTelemetry.Context.Operation.Id;
+            exceptionTelemtry.Context.Operation.ParentId = requestTelemetry.Id;
 
             if (!string.IsNullOrWhiteSpace(resolvedServiceUri))
             {
-                exceptionTelemtry.Properties.Add(
-                Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(nameof(resolvedServiceUri)),
-                resolvedServiceUri);
+                exceptionTelemtry.Properties.Add("ResolvedServiceUri", resolvedServiceUri);
             }
 
             client.TrackException(ex);
