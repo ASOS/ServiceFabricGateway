@@ -13,7 +13,12 @@ namespace Gateway.Handlers
 
         public GatewayHandler(IClientProxy clientProxy)
         {
-            this.clientProxy = clientProxy ?? throw new ArgumentNullException(nameof(clientProxy));
+            if (clientProxy == null)
+            {
+                throw new ArgumentNullException(nameof(clientProxy));
+            }
+
+            this.clientProxy = clientProxy;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

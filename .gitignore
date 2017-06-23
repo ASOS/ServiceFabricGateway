@@ -254,3 +254,4 @@ paket-files/
 # Custom
 /build/tools/*
 !/build/tools/packages.config
+*.DotSettings
