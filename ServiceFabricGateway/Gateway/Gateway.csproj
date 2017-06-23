@@ -145,6 +145,7 @@
     <Compile Include="OwinCommunicationListener.cs" />
     <Compile Include="Gateway.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProxyToServiceInvokeException.cs" />
     <Compile Include="ServiceDiscoveryClientProxy.cs" />
     <Compile Include="ServiceEventSource.cs" />
     <Compile Include="Startup.cs" />

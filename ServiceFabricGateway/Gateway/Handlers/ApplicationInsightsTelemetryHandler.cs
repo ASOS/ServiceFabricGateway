@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -24,38 +25,62 @@ namespace Gateway.Handlers
             var startDate = DateTimeOffset.Now;
             HttpStatusCode responseStatus = HttpStatusCode.InternalServerError;
 
+            var method = request.Method.ToString().ToUpper();
+            var name = $"{method} {request.RequestUri}";
+
+            var requestTelemetry = new RequestTelemetry
+            {
+                Name = name,
+                Timestamp = startDate
+            };
+
             stopWatch.Start();
 
             try
-            {                
-                var response =  await base.SendAsync(request, cancellationToken);
+            {
+                var response = await base.SendAsync(request, cancellationToken);
                 responseStatus = response.StatusCode;
                 return response;
             }
+            catch (ProxyToServiceInvokeException e)
+            {
+                TrackException(requestTelemetry, e.InnerException, e.ResolvedServiceUri.AbsoluteUri);
+                throw;
+            }
             catch (Exception e)
             {
-                TrackException(e);
+                TrackException(requestTelemetry, e);
                 throw;
             }
             finally
             {
                 stopWatch.Stop();
-                TrackRequest(request, responseStatus, startDate, stopWatch.Elapsed);
+                TrackRequest(requestTelemetry, responseStatus, stopWatch.Elapsed);
             }
         }
 
-        private void TrackException(Exception ex)
+        private void TrackException(RequestTelemetry requestTelemetry, Exception ex, string resolvedServiceUri = null)
         {
+            var exceptionTelemtry = new ExceptionTelemetry(ex);
+
+            exceptionTelemtry.Context.Operation.ParentId = requestTelemetry.Context.Operation.Id;
+
+            if (!string.IsNullOrWhiteSpace(resolvedServiceUri))
+            {
+                exceptionTelemtry.Properties.Add(
+                Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(nameof(resolvedServiceUri)),
+                resolvedServiceUri);
+            }
+
             client.TrackException(ex);
         }
 
-        private void TrackRequest(HttpRequestMessage request, HttpStatusCode responseStatus, DateTimeOffset startDate, TimeSpan duration)
+        private void TrackRequest(RequestTelemetry requestTelemetry, HttpStatusCode responseStatus, TimeSpan duration)
         {
-            var method = request.Method.ToString().ToUpper();
-            var name = $"{method} {request.RequestUri}";
-            var statusCode = (int) responseStatus;
-
-            var requestTelemetry = new RequestTelemetry(name, startDate, duration, statusCode.ToString(), statusCode < 400);
+            var statusCode = (int)responseStatus;
+            requestTelemetry.Duration = duration;
+            requestTelemetry.ResponseCode = statusCode.ToString();
+            requestTelemetry.Success = statusCode < 400;
             client.TrackRequest(requestTelemetry);
         }
     }
