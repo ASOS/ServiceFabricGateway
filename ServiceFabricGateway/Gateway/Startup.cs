@@ -16,6 +16,7 @@ namespace Gateway
     public static class Startup
     {
         private const int DefaultRetries = 3;
+        private static readonly TimeSpan NotSetTimeout = TimeSpan.Zero;
 
         // This code configures Web API. The Startup class is specified as a type
         // parameter in the WebApp.Start method.
@@ -43,10 +44,12 @@ namespace Gateway
 
                 return errors == SslPolicyErrors.None;
             };
+            
+            ConfigurationPackage configurationPackage = GetConfigurationPackage();
 
-            var client = CreateHttpClient();
-            var maxRetryCount = GetMaxRetriesFromConfiguration();
-            var defaultBackoffInterval = TimeSpan.FromSeconds(0);
+            var client = CreateHttpClient(configurationPackage);
+            var maxRetryCount = GetMaxRetries(configurationPackage);
+            var defaultBackoffInterval = TimeSpan.Zero;
             var operationRetrySettings = new OperationRetrySettings(
                 maxRetryBackoffIntervalOnTransientErrors: defaultBackoffInterval,
                 maxRetryBackoffIntervalOnNonTransientErrors: defaultBackoffInterval,
@@ -54,18 +57,22 @@ namespace Gateway
 
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
-            config.MessageHandlers.Add(new ApplicationInsightsTelemetryHandler(CreateTelemetryClient()));
+            config.MessageHandlers.Add(new ApplicationInsightsTelemetryHandler(CreateTelemetryClient(configurationPackage)));
             config.MessageHandlers.Add(new ProbeHandler());
             config.MessageHandlers.Add(new GatewayHandler(new ServiceDiscoveryClientProxy(client, new HttpExceptionHandler(), operationRetrySettings)));
             appBuilder.UseWebApi(config);
         }
 
-        private static int GetMaxRetriesFromConfiguration()
+        private static ConfigurationPackage GetConfigurationPackage()
         {
-            var config = FabricRuntime.GetActivationContext().GetConfigurationPackageObject("Config");
+            return FabricRuntime.GetActivationContext().GetConfigurationPackageObject("Config");
+        }
+
+        private static int GetMaxRetries(ConfigurationPackage configurationPackage)
+        {
             int retries;
 
-            if (!int.TryParse(config.Settings.Sections["Retries"].Parameters["Attempts"].Value, out retries))
+            if (!int.TryParse(configurationPackage.Settings.Sections["Retries"].Parameters["Attempts"].Value, out retries))
             {
                 // Assume a default policy
                 retries = DefaultRetries;
@@ -74,15 +81,34 @@ namespace Gateway
             return retries;
         }
 
-        private static HttpClient CreateHttpClient()
+        private static TimeSpan GetHttpClientTimeout(ConfigurationPackage configurationPackage)
         {
-            return new HttpClient();
+            TimeSpan timeout;
+
+            if (!TimeSpan.TryParse(configurationPackage.Settings.Sections["HttpClient"].Parameters["Timeout"].Value, out timeout))
+            {
+                timeout = NotSetTimeout;
+            }
+
+            return timeout;
         }
 
-        private static TelemetryClient CreateTelemetryClient()
+        private static HttpClient CreateHttpClient(ConfigurationPackage configurationPackage)
         {
-            var config = FabricRuntime.GetActivationContext().GetConfigurationPackageObject("Config");
-            var telemetry = config.Settings.Sections["Telemetry"];
+            var timeout = GetHttpClientTimeout(configurationPackage);
+            var httpClient = new HttpClient();
+
+            if (timeout != NotSetTimeout)
+            {
+                httpClient.Timeout = timeout;
+            }
+
+            return httpClient;
+        }
+
+        private static TelemetryClient CreateTelemetryClient(ConfigurationPackage configurationPackage)
+        {
+            var telemetry = configurationPackage.Settings.Sections["Telemetry"];
             var instrumentationKey = telemetry.Parameters["InstrumentationKey"].Value;
             bool disableTelemetry;
 

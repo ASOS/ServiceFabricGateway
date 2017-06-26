@@ -6,6 +6,7 @@
     <Parameter Name="Gateway_DisableTelemetry" DefaultValue="true" />
     <Parameter Name="Gateway_Attempts" DefaultValue="3" />
     <Parameter Name="Gateway_SSLCertThumbprint" DefaultValue="REPLACE_THIS" />
+    <Parameter Name="Gateway_Timeout" DefaultValue="REPLACE_THIS" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -21,6 +22,9 @@
           </Section>
           <Section Name="Retries">
             <Parameter Name="Attempts" Value="[Gateway_Attempts]" />
+          </Section>
+          <Section Name="HttpClient">
+            <Parameter Name="Timeout" Value="[Gateway_Timeout]" />
           </Section>
         </Settings>
       </ConfigOverride>

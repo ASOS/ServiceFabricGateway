@@ -5,6 +5,10 @@
     <Parameter Name="InstrumentationKey" Value="##PUT_VALUE_HERE##" />
     <Parameter Name="DisableTelemetry" Value="false" />
   </Section>
+  
+  <Section Name="HttpClient">
+    <Parameter Name="Timeout" Value="##PUT_VALUE_HERE##" />
+  </Section>
 
   <Section Name="Retries">
     <Parameter Name="Attempts" Value="3" />

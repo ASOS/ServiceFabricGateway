@@ -6,5 +6,6 @@
     <Parameter Name="Gateway_DisableTelemetry" Value="#{DisableTelemetry}" />
     <Parameter Name="Gateway_Attempts" Value="#{RetryAttempts}" />
     <Parameter Name="Gateway_SSLCertThumbprint" Value="#{SSLCertThumbprint}" />
+    <Parameter Name="Gateway_Timeout" Value="#{HttpClientTimeout}" />
   </Parameters>
 </Application>

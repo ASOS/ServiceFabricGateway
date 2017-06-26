@@ -68,7 +68,7 @@ namespace Gateway.Handlers
 
             if (!string.IsNullOrWhiteSpace(resolvedServiceUri))
             {
-                exceptionTelemtry.Properties.Add("ResolvedServiceUri", resolvedServiceUri);
+                exceptionTelemtry.Properties.Add("Resolved Service Uri", resolvedServiceUri);
             }
 
             client.TrackException(exceptionTelemtry);
