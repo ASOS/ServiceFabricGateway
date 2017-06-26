@@ -71,7 +71,7 @@ namespace Gateway.Handlers
                 exceptionTelemtry.Properties.Add("ResolvedServiceUri", resolvedServiceUri);
             }
 
-            client.TrackException(exceptionTelemtry);
+            client.TrackException(ex);
         }
 
         private void TrackRequest(RequestTelemetry requestTelemetry, HttpStatusCode responseStatus, TimeSpan duration)
