@@ -25,11 +25,11 @@ namespace Gateway
 
             try
             {
-                return await client.InvokeWithRetryAsync(c =>
+                return await client.InvokeWithRetryAsync(async c =>  
                     {
                         resolvedServiceUri = c.Url;
                         var serviceUri = GetServiceUri(resolvedServiceUri, request.RequestUri);
-                        return ProxyRequest(serviceUri, request, c.HttpClient);
+                        return await ProxyRequest(serviceUri, request, c.HttpClient);
                     },
                     cancellationToken);
             }
@@ -39,11 +39,11 @@ namespace Gateway
             }
         }
 
-        private Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)
+        private async Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)
         {
             var proxiedRequest = request.Clone(serviceUri);
 
-            return client.SendAsync(proxiedRequest);
+            return await client.SendAsync(proxiedRequest);
         }
 
         private Uri GetServiceUri(Uri baseUri, Uri requestUri)
