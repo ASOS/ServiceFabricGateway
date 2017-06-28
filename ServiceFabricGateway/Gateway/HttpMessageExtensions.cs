@@ -1,19 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Gateway
 {
     public static class HttpMessageExtensions
     {
         // NOTE: Adapted from http://stackoverflow.com/questions/21467018/how-to-forward-an-httprequestmessage-to-another-server
-        public static HttpRequestMessage Clone(this HttpRequestMessage req, Uri newUri)
+        public static async Task<HttpRequestMessage> Clone(this HttpRequestMessage req, Uri newUri)
         {
             HttpRequestMessage clone = new HttpRequestMessage(req.Method, newUri);
 
             if (req.Method != HttpMethod.Get)
             {
-                clone.Content = req.Content;
+                var memoryStream = new MemoryStream();
+                await req.Content.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                clone.Content = new StreamContent(memoryStream);
             }
             clone.Version = req.Version;
 

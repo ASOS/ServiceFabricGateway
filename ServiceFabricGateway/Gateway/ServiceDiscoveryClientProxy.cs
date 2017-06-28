@@ -38,7 +38,7 @@ namespace Gateway
 
         private async Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)
         {
-            var proxiedRequest = request.Clone(serviceUri);
+            var proxiedRequest = await request.Clone(serviceUri);
 
             return await client.SendAsync(proxiedRequest);
         }

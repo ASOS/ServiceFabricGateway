@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Gateway.Tests
@@ -17,7 +18,7 @@ namespace Gateway.Tests
         {
             Expected = CreateExpected();
 
-            Actual = Expected.Clone(new Uri("http://overridden"));
+            Actual = Expected.Clone(new Uri("http://overridden")).Result;
         }
 
         protected abstract HttpRequestMessage CreateExpected();
@@ -51,12 +52,6 @@ namespace Gateway.Tests
         {
             Assert.That(Actual.Properties, Is.EquivalentTo(Expected.Properties));
         }
-
-        [Test]
-        public void then_the_content_is_cloned()
-        {
-            Assert.That(Expected.Content, Is.EqualTo(Actual.Content));
-        }
     }
 
     [TestFixture]
@@ -72,6 +67,13 @@ namespace Gateway.Tests
 
             return expected;
         }
+
+        [Test]
+        public async Task then_the_content_is_cloned()
+        {
+            Assert.That(Expected.Content, Is.Not.SameAs(Actual.Content));
+            FileAssert.AreEqual(await Expected.Content.ReadAsStreamAsync(), await Actual.Content.ReadAsStreamAsync());
+        }
     }
 
     [TestFixture]
@@ -85,6 +87,12 @@ namespace Gateway.Tests
             expected.Properties.Add("MyTestProperty", "PropertyValue");
 
             return expected;
+        }
+
+        [Test]
+        public void then_no_content_is_assigned()
+        {
+            Assert.That(Actual.Content, Is.Null);
         }
     }
 }

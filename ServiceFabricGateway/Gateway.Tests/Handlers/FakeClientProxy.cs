@@ -26,11 +26,11 @@ namespace Gateway.Tests.Handlers
             return await ProxyRequest(serviceUri, request, httpClient);
         }
 
-        private Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)
+        private async Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)
         {
-            var proxiedRequest = request.Clone(serviceUri);
+            var proxiedRequest = await request.Clone(serviceUri);
 
-            return client.SendAsync(proxiedRequest);
+            return await client.SendAsync(proxiedRequest);
         }
 
         private Uri GetServiceUri(Uri baseUri, Uri requestUri)
