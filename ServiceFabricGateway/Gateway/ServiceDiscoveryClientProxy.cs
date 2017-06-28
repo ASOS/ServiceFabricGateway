@@ -21,22 +21,19 @@ namespace Gateway
         {
             var client = new ServicePartitionClient<HttpCommunicationClient>(this.communicationClientFactory, fabricAddress.Uri, retrySettings: this.operationRetrySettings);
 
-            var resolvedServiceUri = new Uri("http://foo.com");
-
-            try
+            return await client.InvokeWithRetryAsync(async c =>  
             {
-                return await client.InvokeWithRetryAsync(async c =>  
-                    {
-                        resolvedServiceUri = c.Url;
-                        var serviceUri = GetServiceUri(resolvedServiceUri, request.RequestUri);
-                        return await ProxyRequest(serviceUri, request, c.HttpClient);
-                    },
-                    cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                throw new ProxyToServiceInvokeException(ex, resolvedServiceUri);
-            }
+                try
+                {
+                    var serviceUri = GetServiceUri(c.Url, request.RequestUri);
+                    return await ProxyRequest(serviceUri, request, c.HttpClient);
+                }
+                catch (Exception ex)
+                {
+                    throw new ProxyToServiceInvokeException(ex, c.Url);
+                }
+            },
+            cancellationToken);
         }
 
         private async Task<HttpResponseMessage> ProxyRequest(Uri serviceUri, HttpRequestMessage request, HttpClient client)

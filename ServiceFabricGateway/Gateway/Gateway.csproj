@@ -132,7 +132,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\ApplicationInsightsTelemetryHandler.cs" />
+    <Compile Include="ApplicationInsightsTelemetryLogger.cs" />
+    <Compile Include="Handlers\TelemetryHandler.cs" />
     <Compile Include="FabricAddress.cs" />
     <Compile Include="Handlers\GatewayHandler.cs" />
     <Compile Include="Handlers\HttpExceptionHandler.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="HttpCommunicationClientFactory.cs" />
     <Compile Include="HttpMessageExtensions.cs" />
     <Compile Include="IClientProxy.cs" />
+    <Compile Include="ITelemetryLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OwinCommunicationListener.cs" />
     <Compile Include="Gateway.cs" />

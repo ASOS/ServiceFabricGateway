@@ -64,25 +64,6 @@ Task("Set-Service-Fabric-Package-Version")
     }
 });
 
-// This approach requires a .nuspec file alongside the SF package
-/*
-Task("Create-OD-Package")
-    .Does(() =>
-{
-    var nuspecFile = new FilePath(serviceFabricProject).ChangeExtension(".nuspec");
-    var settings =  new NuGetPackSettings 
-    { 
-        Version = packageVersion,
-        Properties = new Dictionary<string, string> 
-        {
-            { "configuration", configuration }
-        }
-    };
-
-    NuGetPack(nuspecFile, settings);
-});
-*/
-
 // This approach creates the nuspec file and package in one go
 Task("Create-OD-Package")
     .Does(() =>
@@ -127,6 +108,7 @@ Task("Default")
     .IsDependentOn("Restore-NuGet-Packages")
     .IsDependentOn("Build-Solution")
     .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Create-Service-Fabric-Package")
     .IsDependentOn("Set-Service-Fabric-Package-Version")
     .IsDependentOn("Create-OD-Package");
 

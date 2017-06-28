@@ -114,6 +114,7 @@
     <Compile Include="Handlers\InvalidGatewayRouteTests.cs" />
     <Compile Include="Handlers\Specification.cs" />
     <Compile Include="Handlers\StartupBootstrapper.cs" />
+    <Compile Include="Handlers\TelemetryTests.cs" />
     <Compile Include="Handlers\ValidGatewayRouteTests.cs" />
     <Compile Include="HttpMessageExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
