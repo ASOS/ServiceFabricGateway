@@ -18,8 +18,12 @@ namespace Gateway
                 var memoryStream = new MemoryStream();
                 await req.Content.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-
                 clone.Content = new StreamContent(memoryStream);
+
+                foreach (var contentHeader in req.Content.Headers)
+                {
+                    clone.Content.Headers.Add(contentHeader.Key, contentHeader.Value);
+                }
             }
             clone.Version = req.Version;
 

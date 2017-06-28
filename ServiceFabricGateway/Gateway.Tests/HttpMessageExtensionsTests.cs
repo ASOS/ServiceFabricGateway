@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -63,7 +64,7 @@ namespace Gateway.Tests
             expected.Version = HttpVersion.Version11;
             expected.Headers.Add("X-MyCustomHeader", "HeaderValue");
             expected.Properties.Add("MyTestProperty", "PropertyValue");
-            expected.Content = new StringContent("TestContent");
+            expected.Content = new StringContent("{\"test\":\"data\"}", Encoding.UTF8, "application/json");
 
             return expected;
         }
@@ -71,6 +72,7 @@ namespace Gateway.Tests
         [Test]
         public async Task then_the_content_is_cloned()
         {
+            CollectionAssert.AreEquivalent(Expected.Content.Headers, Actual.Content.Headers);
             Assert.That(Expected.Content, Is.Not.SameAs(Actual.Content));
             FileAssert.AreEqual(await Expected.Content.ReadAsStreamAsync(), await Actual.Content.ReadAsStreamAsync());
         }
