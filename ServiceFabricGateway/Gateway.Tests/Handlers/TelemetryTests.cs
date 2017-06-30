@@ -12,15 +12,16 @@ namespace Gateway.Tests.Handlers
     public class TelemetryTests
     {
         [Test]
-        public async Task when_a_proxying_error_is_thrown_it_is_logged()
+        public async Task when_a_proxying_error_is_thrown_it_is_logged_and_an_internal_server_error_is_returned()
         {
             var logger = new FakeTelemetryLogger();
             var sut = new TelemetryHandler(() => logger);
             sut.InnerHandler = new FakeDelegatingHandler(new ProxyToServiceInvokeException(new Exception("Test"), new Uri("http://attempted.com")));
             var invoker = new HttpMessageInvoker(sut);
 
-            Assert.Throws<ProxyToServiceInvokeException>(async () => await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None));
+            var response = await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None);
 
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
             Assert.That(logger.ProxyToServiceErrorOccurredCalled, Is.True);
             Assert.That(logger.RequestCompletedCalled, Is.True);
         }
@@ -33,8 +34,9 @@ namespace Gateway.Tests.Handlers
             sut.InnerHandler = new FakeDelegatingHandler(new Exception("Test"));
             var invoker = new HttpMessageInvoker(sut);
 
-            Assert.Throws<Exception>(async () => await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None));
+            var response = await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None);
 
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
             Assert.That(logger.ErrorOccurredCalled, Is.True);
             Assert.That(logger.RequestCompletedCalled, Is.True);
         }

@@ -34,18 +34,23 @@ namespace Gateway.Handlers
             catch (ProxyToServiceInvokeException e)
             {
                 logger.ErrorOccurred(e);
-                throw;
+                return CreateInternalServerErrorResponse();
             }
             catch (Exception e)
             {
                 logger.ErrorOccurred(e);
-                throw;
+                return CreateInternalServerErrorResponse();
             }
             finally
             {
                 stopWatch.Stop();
                 logger.RequestCompleted(request, startDate, responseStatus, stopWatch.Elapsed);
             }
+        }
+
+        private HttpResponseMessage CreateInternalServerErrorResponse()
+        {
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
     }
 }
