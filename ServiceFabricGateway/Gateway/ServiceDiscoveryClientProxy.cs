@@ -21,6 +21,8 @@ namespace Gateway
         {
             var client = new ServicePartitionClient<HttpCommunicationClient>(this.communicationClientFactory, fabricAddress.Uri, retrySettings: this.operationRetrySettings);
 
+            await request.Content.LoadIntoBufferAsync();
+
             return await client.InvokeWithRetryAsync(async c =>
             {
                 try

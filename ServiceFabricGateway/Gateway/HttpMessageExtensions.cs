@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,10 +14,7 @@ namespace Gateway
 
             if (req.Method != HttpMethod.Get)
             {
-                var memoryStream = new MemoryStream();
-                await req.Content.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                clone.Content = new StreamContent(memoryStream);
+                clone.Content = new ByteArrayContent(await req.Content.ReadAsByteArrayAsync());
 
                 foreach (var contentHeader in req.Content.Headers)
                 {
