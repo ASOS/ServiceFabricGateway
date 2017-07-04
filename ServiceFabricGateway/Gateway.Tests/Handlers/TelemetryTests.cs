@@ -22,6 +22,7 @@ namespace Gateway.Tests.Handlers
             var response = await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None);
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+            Assert.That(response.Content, Is.Null);
             Assert.That(logger.ProxyToServiceErrorOccurredCalled, Is.True);
             Assert.That(logger.RequestCompletedCalled, Is.True);
         }
@@ -37,6 +38,7 @@ namespace Gateway.Tests.Handlers
             var response = await invoker.SendAsync(new HttpRequestMessage(), CancellationToken.None);
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+            Assert.That(response.Content, Is.Null);
             Assert.That(logger.ErrorOccurredCalled, Is.True);
             Assert.That(logger.RequestCompletedCalled, Is.True);
         }
@@ -100,7 +102,7 @@ namespace Gateway.Tests.Handlers
                     throw ex;
                 }
 
-                return Task.FromResult(new HttpResponseMessage {StatusCode = HttpStatusCode.OK});
+                return Task.FromResult(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });
             }
         }
     }

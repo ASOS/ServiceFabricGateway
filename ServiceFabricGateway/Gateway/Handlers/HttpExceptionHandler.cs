@@ -98,13 +98,13 @@
 
         private bool ResolveAddressAndRetryResult(ExceptionInformation exceptionInformation, out ExceptionHandlingResult result)
         {
-            result = new ExceptionHandlingRetryResult(exceptionInformation.Exception, TransientException, this.operationRetrySettings, this.operationRetrySettings.DefaultMaxRetryCount);
+            result = new ExceptionHandlingRetryResult(exceptionInformation.Exception, NonTransientException, this.operationRetrySettings, this.operationRetrySettings.DefaultMaxRetryCount);
             return KnownException;
         }
 
         private bool RetryResult(ExceptionInformation exceptionInformation, out ExceptionHandlingResult result)
         {
-            result = new ExceptionHandlingRetryResult(exceptionInformation.Exception, NonTransientException, this.operationRetrySettings, this.operationRetrySettings.DefaultMaxRetryCount);
+            result = new ExceptionHandlingRetryResult(exceptionInformation.Exception, TransientException, this.operationRetrySettings, this.operationRetrySettings.DefaultMaxRetryCount);
             return KnownException;
         }
     }

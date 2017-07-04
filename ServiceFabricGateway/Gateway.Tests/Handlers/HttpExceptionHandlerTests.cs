@@ -184,7 +184,7 @@ namespace Gateway.Tests.Handlers
             var exceptionHandlingRetryResult = exceptionHandlingResult as ExceptionHandlingRetryResult;
             Assert.That(isKnownException, Is.True);
             Assert.That(exceptionHandlingRetryResult, Is.Not.Null);
-            Assert.That(exceptionHandlingRetryResult.IsTransient, Is.EqualTo(resolvesAddress)); // This is the property that tells the ServicePartitionClient to re-resolve the address and try again
+            Assert.That(exceptionHandlingRetryResult.IsTransient, Is.EqualTo(!resolvesAddress)); // This is the property that tells the ServicePartitionClient to re-resolve the address and try again
         }
     }
 }
