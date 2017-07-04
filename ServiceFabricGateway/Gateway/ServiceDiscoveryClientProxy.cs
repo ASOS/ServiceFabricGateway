@@ -21,7 +21,7 @@ namespace Gateway
         {
             var client = new ServicePartitionClient<HttpCommunicationClient>(this.communicationClientFactory, fabricAddress.Uri, retrySettings: this.operationRetrySettings);
 
-            return await client.InvokeWithRetryAsync(async c =>  
+            return await client.InvokeWithRetryAsync(async c =>
             {
                 try
                 {
@@ -30,7 +30,8 @@ namespace Gateway
                 }
                 catch (Exception ex)
                 {
-                    throw new ProxyToServiceInvokeException(ex, c.Url);
+                    ex.Data.Add("Resolved Service Uri", c.Url);
+                    throw;
                 }
             },
             cancellationToken);

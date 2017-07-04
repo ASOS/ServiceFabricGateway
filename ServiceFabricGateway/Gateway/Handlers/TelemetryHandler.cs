@@ -31,11 +31,6 @@ namespace Gateway.Handlers
                 responseStatus = response.StatusCode;
                 return response;
             }
-            catch (ProxyToServiceInvokeException e)
-            {
-                logger.ErrorOccurred(e);
-                return CreateInternalServerErrorResponse();
-            }
             catch (Exception e)
             {
                 logger.ErrorOccurred(e);

@@ -26,11 +26,6 @@ namespace Gateway
             TrackException(exception);
         }
 
-        public void ErrorOccurred(ProxyToServiceInvokeException exception)
-        {
-            TrackException(exception.InnerException, exception.ResolvedServiceUri);
-        }
-
         private static RequestTelemetry CreateRequestTelemetry(HttpRequestMessage request, DateTimeOffset startDate)
         {
             var requestTelemetry = new RequestTelemetry
@@ -51,13 +46,13 @@ namespace Gateway
             client.TrackRequest(requestTelemetry);
         }
 
-        private void TrackException(Exception ex, Uri resolvedServiceUri = null)
+        private void TrackException(Exception ex)
         {
             var exceptionTelemtry = new ExceptionTelemetry(ex);
 
-            if (resolvedServiceUri != null)
+            foreach (string key in ex.Data.Keys)
             {
-                exceptionTelemtry.Properties.Add("Resolved Service Uri", resolvedServiceUri.ToString());
+                exceptionTelemtry.Properties.Add(key, ex.Data[key].ToString());
             }
 
             client.TrackException(exceptionTelemtry);

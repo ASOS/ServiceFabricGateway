@@ -9,7 +9,5 @@ namespace Gateway
         void RequestCompleted(HttpRequestMessage request, DateTimeOffset startDate, HttpStatusCode responseCode, TimeSpan duration);
 
         void ErrorOccurred(Exception exception);
-
-        void ErrorOccurred(ProxyToServiceInvokeException exception);
     }
 }
