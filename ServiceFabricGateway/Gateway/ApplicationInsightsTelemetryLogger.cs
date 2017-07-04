@@ -9,6 +9,7 @@ namespace Gateway
     public class ApplicationInsightsTelemetryLogger : ITelemetryLogger
     {
         private readonly TelemetryClient client;
+        private readonly RequestTelemetry requestTelemetry = new RequestTelemetry();
 
         public ApplicationInsightsTelemetryLogger(TelemetryClient client)
         {
@@ -17,8 +18,8 @@ namespace Gateway
 
         public void RequestCompleted(HttpRequestMessage request, DateTimeOffset startDate, HttpStatusCode responseCode, TimeSpan duration)
         {
-            var requestTelemetry = CreateRequestTelemetry(request, startDate);
-            TrackRequest(requestTelemetry, responseCode, duration);
+            ConfigureRequestTelemetry(request, startDate);
+            TrackRequest(responseCode, duration);
         }
 
         public void ErrorOccurred(Exception exception)
@@ -26,29 +27,26 @@ namespace Gateway
             TrackException(exception);
         }
 
-        private static RequestTelemetry CreateRequestTelemetry(HttpRequestMessage request, DateTimeOffset startDate)
+        private void ConfigureRequestTelemetry(HttpRequestMessage request, DateTimeOffset startDate)
         {
-            var requestTelemetry = new RequestTelemetry
-            {
-                Name = $"{request.Method.ToString().ToUpper()} {request.RequestUri}",
-                Timestamp = startDate,
-                Url = request.RequestUri
-            };
-            return requestTelemetry;
+            this.requestTelemetry.Name = $"{request.Method.ToString().ToUpper()} {request.RequestUri}";
+            this.requestTelemetry.Timestamp = startDate;
+            this.requestTelemetry.Url = request.RequestUri;
         }
 
-        private void TrackRequest(RequestTelemetry requestTelemetry, HttpStatusCode responseStatus, TimeSpan duration)
+        private void TrackRequest(HttpStatusCode responseStatus, TimeSpan duration)
         {
             var statusCode = (int)responseStatus;
-            requestTelemetry.Duration = duration;
-            requestTelemetry.ResponseCode = statusCode.ToString();
-            requestTelemetry.Success = statusCode < 400;
-            client.TrackRequest(requestTelemetry);
+            this.requestTelemetry.Duration = duration;
+            this.requestTelemetry.ResponseCode = statusCode.ToString();
+            this.requestTelemetry.Success = statusCode < 400;
+            client.TrackRequest(this.requestTelemetry);
         }
 
         private void TrackException(Exception ex)
         {
             var exceptionTelemtry = new ExceptionTelemetry(ex);
+            exceptionTelemtry.Context.Operation.ParentId = this.requestTelemetry.Id;
 
             foreach (string key in ex.Data.Keys)
             {
