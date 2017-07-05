@@ -170,8 +170,8 @@ namespace Gateway.Tests
 
             public override long Position
             {
-                get => inner.Position;
-                set => inner.Position = value;
+                get { return inner.Position; }
+                set { inner.Position = value; }
             }
         }
     }
