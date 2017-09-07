@@ -22,7 +22,7 @@
   
   <ClusterConnectionParameters ConnectionEndpoint="#{serviceFabricClientConnetionEndpoint}" X509Credential="true" ServerCertThumbprint="#{serviceFabricClientConnectionThumbprint}" FindType="FindByThumbprint" FindValue="#{serviceFabricClientConnectionThumbprint}" StoreLocation="CurrentUser" StoreName="My" />
   -->
-  <ClusterConnectionParameters ConnectionEndpoint="#{serviceFabricClientConnetionEndpoint}" AzureActiveDirectory="true" ServerCertThumbprint="#{serviceFabricClientConnectionThumbprint}"  />
+  <ClusterConnectionParameters ConnectionEndpoint="#{serviceFabricClientConnectionEndpoint}" AzureActiveDirectory="true" ServerCertThumbprint="#{serviceFabricClientConnectionThumbprint}"  />
   <ApplicationParameterFile Path="..\ApplicationParameters\Cloud.xml" />
   <UpgradeDeployment Mode="Monitored" Enabled="true">
     <Parameters FailureAction="Rollback" UpgradeReplicaSetCheckTimeoutSec="1" Force="True" HealthCheckRetryTimeoutSec="5" HealthCheckStableDurationSec="5"  />
