@@ -1,12 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+
 namespace Gateway
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using System.Web.Http.Controllers;
-    using System.Web.Http.Hosting;
-
     public static class HttpMessageExtensions
     {
         // NOTE: Adapted from http://stackoverflow.com/questions/21467018/how-to-forward-an-httprequestmessage-to-another-server
@@ -36,13 +34,6 @@ namespace Gateway
             }
 
             return clone;
-        }
-
-        public static HttpRequestContext GetRequestContext(this HttpRequestMessage request)
-        {
-            object context;
-            request.Properties.TryGetValue(HttpPropertyKeys.RequestContextKey, out context);
-            return (HttpRequestContext)context;
         }
     }
 }
