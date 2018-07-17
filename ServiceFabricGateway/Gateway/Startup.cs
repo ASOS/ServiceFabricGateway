@@ -96,7 +96,7 @@ namespace Gateway
         private static HttpClient CreateHttpClient(ConfigurationPackage configurationPackage)
         {
             var timeout = GetHttpClientTimeout(configurationPackage);
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient(new ClientCertificateHandler());
 
             if (timeout != NotSetTimeout)
             {
