@@ -32,12 +32,6 @@ namespace Gateway
             this.requestTelemetry.Name = $"{request.Method.ToString().ToUpper()} {request.RequestUri}";
             this.requestTelemetry.Timestamp = startDate;
             this.requestTelemetry.Url = request.RequestUri;
-
-            var certificate = request.GetClientCertificate();
-            if (certificate != null)
-            {
-                this.requestTelemetry.Properties.Add("ClientCertificateThumbprint", certificate.Thumbprint);
-            }
         }
 
         private void TrackRequest(HttpStatusCode responseStatus, TimeSpan duration)
