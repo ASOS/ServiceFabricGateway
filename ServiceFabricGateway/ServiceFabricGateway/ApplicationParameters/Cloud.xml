@@ -7,5 +7,6 @@
     <Parameter Name="Gateway_Attempts" Value="#{RetryAttempts}" />
     <Parameter Name="Gateway_SSLCertThumbprint" Value="#{SSLCertThumbprint}" />
     <Parameter Name="Gateway_Timeout" Value="#{HttpClientTimeout}" />
+    <Parameter Name="Gateway_ServiceFabricEndpoint" Value="#{ServiceFabricEndpoint}" />
   </Parameters>
 </Application>

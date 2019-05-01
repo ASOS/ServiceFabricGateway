@@ -57,7 +57,9 @@ namespace Gateway
 
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
-            config.MessageHandlers.Add(new TelemetryHandler(() => new ApplicationInsightsTelemetryLogger(CreateTelemetryClient(configurationPackage))));
+            config.MessageHandlers.Add(new TelemetryHandler(() => new ApplicationInsightsTelemetryLogger(
+                CreateTelemetryClient(configurationPackage),
+                configurationPackage.Settings.Sections["Telemetry"].Parameters["ServiceFabricEndpoint"].Value)));
             config.MessageHandlers.Add(new ProbeHandler());
             config.MessageHandlers.Add(new GatewayHandler(new ServiceDiscoveryClientProxy(client, new HttpExceptionHandler(), operationRetrySettings)));
             appBuilder.UseWebApi(config);

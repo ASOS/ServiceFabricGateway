@@ -7,6 +7,7 @@
     <Parameter Name="Gateway_Attempts" DefaultValue="3" />
     <Parameter Name="Gateway_SSLCertThumbprint" DefaultValue="REPLACE_THIS" />
     <Parameter Name="Gateway_Timeout" DefaultValue="REPLACE_THIS" />
+    <Parameter Name="Gateway_ServiceFabricEndpoint" DefaultValue="REPLACE_THIS" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -19,6 +20,7 @@
           <Section Name="Telemetry">
             <Parameter Name="InstrumentationKey" Value="[Gateway_InstrumentationKey]" />
             <Parameter Name="DisableTelemetry" Value="[Gateway_DisableTelemetry]" />
+            <Parameter Name="ServiceFabricEndpoint" Value="[Gateway_ServiceFabricEndpoint]" />
           </Section>
           <Section Name="Retries">
             <Parameter Name="Attempts" Value="[Gateway_Attempts]" />

@@ -3,8 +3,9 @@
   <Parameters>
     <Parameter Name="Gateway_InstanceCount" Value="1" />
     <Parameter Name="Gateway_InstrumentationKey" Value="REPLACE_THIS" />
-    <Parameter Name="Gateway_DisableTelemetry" Value="True" />
+    <Parameter Name="Gateway_DisableTelemetry" Value="False" />
     <Parameter Name="Gateway_Attempts" Value="3" />
     <Parameter Name="Gateway_SSLCertThumbprint" Value="C82EEA88D437C0995E0028CE48E0DC1C012A9E1D" />
+    <Parameter Name="Gateway_ServiceFabricEndpoint" Value="localhost" />
   </Parameters>
 </Application>

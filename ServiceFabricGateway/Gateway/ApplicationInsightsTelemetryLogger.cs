@@ -9,11 +9,13 @@ namespace Gateway
     public class ApplicationInsightsTelemetryLogger : ITelemetryLogger
     {
         private readonly TelemetryClient client;
+        private readonly string serviceFabricEndpoint;
         private readonly RequestTelemetry requestTelemetry = new RequestTelemetry();
 
-        public ApplicationInsightsTelemetryLogger(TelemetryClient client)
+        public ApplicationInsightsTelemetryLogger(TelemetryClient client, string serviceFabricEndpoint)
         {
             this.client = client;
+            this.serviceFabricEndpoint = serviceFabricEndpoint;
         }
 
         public void RequestCompleted(HttpRequestMessage request, DateTimeOffset startDate, HttpStatusCode responseCode, TimeSpan duration)
@@ -32,6 +34,7 @@ namespace Gateway
             this.requestTelemetry.Name = $"{request.Method.ToString().ToUpper()} {request.RequestUri}";
             this.requestTelemetry.Timestamp = startDate;
             this.requestTelemetry.Url = request.RequestUri;
+            this.requestTelemetry.Properties.Add("ServiceFabricEndpoint", this.serviceFabricEndpoint);
         }
 
         private void TrackRequest(HttpStatusCode responseStatus, TimeSpan duration)

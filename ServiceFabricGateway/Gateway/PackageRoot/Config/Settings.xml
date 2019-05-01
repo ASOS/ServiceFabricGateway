@@ -4,6 +4,7 @@
   <Section Name="Telemetry">
     <Parameter Name="InstrumentationKey" Value="##PUT_VALUE_HERE##" />
     <Parameter Name="DisableTelemetry" Value="false" />
+    <Parameter Name="ServiceFabricEndpoint" Value="##PUT_VALUE_HERE##" />
   </Section>
   
   <Section Name="HttpClient">
