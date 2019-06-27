@@ -15,5 +15,6 @@
     <file src="..\ServiceFabricGateway\scripts\Deploy-FabricApplication.ps1" target="scripts" />
     <file src="..\ServiceFabricGateway\ApplicationParameters\Cloud.xml" target="ApplicationParameters" />
     <file src="..\ServiceFabricGateway\PublishProfiles\ODProfile.xml" target="PublishProfiles" />
+    <file src="..\ServiceFabricGateway\DeployToServiceFabric.ps1" target="" />
   </files>
 </package>
