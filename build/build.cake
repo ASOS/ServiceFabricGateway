@@ -1,4 +1,4 @@
-#tool "nuget:?package=NUnit.Runners&version=2.6.4"
+#tool "nuget:?package=NUnit.ConsoleRunner"
 
 // ARGUMENTS
 var target = Argument<string>("target");
@@ -40,12 +40,13 @@ Task("Build-Solution")
         settings => settings.SetConfiguration(configuration).UseToolVersion(MSBuildToolVersion.VS2017)));
 
 Task("Run-Unit-Tests")
-    .Does(() => NUnit("../**/bin/x64/" + configuration + "/*.Tests.dll"));
+    .Does(() => NUnit3("../**/bin/x64/" + configuration + "/*.Tests.dll"));
 
 Task("Create-Service-Fabric-Package")
     .Does(() => MSBuild(
         serviceFabricProject, 
-        settings => settings.SetConfiguration(configuration).WithTarget("Package")));
+        settings => settings.SetConfiguration(configuration)
+        .WithTarget("Package").UseToolVersion(MSBuildToolVersion.VS2017)));
 
 Task("Set-Service-Fabric-Package-Version")
     .Does(() =>

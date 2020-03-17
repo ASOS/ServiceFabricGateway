@@ -14,7 +14,7 @@ namespace Gateway.Tests.Handlers
         private HttpExceptionHandler httpExceptionHandler;
         private OperationRetrySettings operationRetrySettings;
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Initialise()
         {
             this.httpExceptionHandler = new HttpExceptionHandler();
