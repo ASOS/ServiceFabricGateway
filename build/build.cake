@@ -37,7 +37,7 @@ Task("Restore-NuGet-Packages")
 Task("Build-Solution")
     .Does(() => MSBuild(
         solutionFile,
-        settings => settings.SetConfiguration(configuration).UseToolVersion(MSBuildToolVersion.VS2017)));
+        settings => settings.SetConfiguration(configuration)));
 
 Task("Run-Unit-Tests")
     .Does(() => NUnit3("../**/bin/x64/" + configuration + "/*.Tests.dll"));
