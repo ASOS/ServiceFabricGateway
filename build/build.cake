@@ -46,7 +46,7 @@ Task("Create-Service-Fabric-Package")
     .Does(() => MSBuild(
         serviceFabricProject, 
         settings => settings.SetConfiguration(configuration)
-        .WithTarget("Package").UseToolVersion(MSBuildToolVersion.VS2017)));
+        .WithTarget("Package")));
 
 Task("Set-Service-Fabric-Package-Version")
     .Does(() =>
